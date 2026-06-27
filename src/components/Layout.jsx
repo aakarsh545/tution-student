@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import { Home, Trophy, Award, Target } from 'lucide-react';
+import { Home, Trophy, Award } from 'lucide-react';
 
 export default function Layout() {
   return (
@@ -30,13 +30,6 @@ export default function Layout() {
         >
           <Award className="w-5 h-5 mb-1" />
           <span className="text-[10px] font-bold">Badges</span>
-        </NavLink>
-        <NavLink 
-          to="/predict" 
-          className={({ isActive }) => `flex flex-col items-center p-2 rounded-xl transition ${isActive ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}
-        >
-          <Target className="w-5 h-5 mb-1" />
-          <span className="text-[10px] font-bold">Predict</span>
         </NavLink>
       </div>
     </div>

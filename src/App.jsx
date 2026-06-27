@@ -12,7 +12,6 @@ import PaymentHistory from './pages/PaymentHistory';
 import TestHistory from './pages/TestHistory';
 import Leaderboard from './pages/Leaderboard';
 import Badges from './pages/Badges';
-import Predict from './pages/Predict';
 import Layout from './components/Layout';
 
 export default function App() {
@@ -26,7 +25,6 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/badges" element={<Badges />} />
-          <Route path="/predict" element={<Predict />} />
         </Route>
 
         {/* History pages without bottom nav */}

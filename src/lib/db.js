@@ -107,23 +107,6 @@ export async function getLeaderboardData() {
   };
 }
 
-// Predictions Queries
-export async function submitPrediction(prediction) {
-  const { data, error } = await supabase.from('predictions').insert(prediction).select();
-  if (error) throw error;
-  return data[0];
-}
-
-export async function getPredictions(studentId) {
-  const { data, error } = await supabase
-    .from('predictions')
-    .select('*')
-    .eq('student_id', studentId)
-    .order('created_at', { ascending: false });
-  if (error) throw error;
-  return data;
-}
-
 // Pulse Queries
 export async function submitPulse(pulse) {
   const { data, error } = await supabase.from('pulse').insert(pulse).select();
