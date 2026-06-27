@@ -77,6 +77,12 @@ export default function Home() {
 
       const todayAttendance = todaySession ? attendanceData.find(a => a.session_id === todaySession.id) : null;
 
+      console.log("TEMPORARY DEBUG:");
+      console.log("- today variable (IST):", new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }));
+      console.log("- raw todaySession result:", todaySession);
+      console.log("- attendanceData result:", attendanceData);
+      console.log("- todayAttendance matching:", todayAttendance);
+
       // Calculate attendance stats & streak
       const stats = { present: 0, absent: 0, late: 0, total: attendanceData.length };
       const missed = [];
