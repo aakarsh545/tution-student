@@ -1,1 +1,2 @@
-export const TEACHER_PHONE = '+919876543210';
+export const TEACHER_1_PHONE = '+917348944319';
+export const TEACHER_2_PHONE = '+918151873359';

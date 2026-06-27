@@ -13,7 +13,7 @@ import {
   submitPulse,
   getStudentProfile
 } from '../lib/db';
-import { TEACHER_PHONE } from '../lib/config';
+import { TEACHER_1_PHONE, TEACHER_2_PHONE } from '../lib/config';
 import { TIMETABLE } from '../lib/timetable';
 import { 
   MessageSquare,
@@ -434,15 +434,24 @@ export default function Home() {
         )}
 
         {/* Section 8 - Contact Teacher */}
-        <section>
+        <section className="flex gap-3">
           <a 
-            href={`https://wa.me/${TEACHER_PHONE.replace(/[^0-9]/g, '')}`}
+            href={`https://wa.me/${TEACHER_1_PHONE.replace(/[^0-9]/g, '')}`}
             target="_blank"
             rel="noreferrer"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-md shadow-indigo-200 flex items-center justify-center gap-2 active:scale-95 transition"
+            className="flex-1 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold py-3 px-2 rounded-xl shadow-md shadow-green-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition"
           >
             <MessageSquare className="w-5 h-5" />
-            Message Teacher on WhatsApp →
+            <span className="text-xs">Teacher 1</span>
+          </a>
+          <a 
+            href={`https://wa.me/${TEACHER_2_PHONE.replace(/[^0-9]/g, '')}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex-1 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold py-3 px-2 rounded-xl shadow-md shadow-green-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition"
+          >
+            <MessageSquare className="w-5 h-5" />
+            <span className="text-xs">Teacher 2</span>
           </a>
         </section>
 
