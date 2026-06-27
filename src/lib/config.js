@@ -1,0 +1,1 @@
+export const TEACHER_PHONE = '+919876543210';
