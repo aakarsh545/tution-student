@@ -97,7 +97,7 @@ export default function Home() {
       });
 
       // Calculate pending fees for current month
-      const currentMonthStr = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+      const currentMonthStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', month: 'long', year: 'numeric' });
       let pendingFees = 0;
       let feeStatus = '';
       
@@ -169,7 +169,7 @@ export default function Home() {
   const attendancePercentage = attendanceStats.total === 0 ? 0 : 
     Math.round(((attendanceStats.present + attendanceStats.late) / attendanceStats.total) * 100);
 
-  const today = new Date();
+  const today = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
   const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday
   const todaySubject = TIMETABLE[dayOfWeek];
 
@@ -190,12 +190,20 @@ export default function Home() {
           <h1 className="text-xl font-bold text-gray-800 tracking-tight">{greeting}, {firstName}</h1>
           <p className="text-sm font-semibold text-gray-500 mt-0.5">{dateString}</p>
         </div>
-        <button 
-          onClick={handleLogout}
-          className="text-xs font-bold text-gray-400 hover:text-gray-600 transition"
-        >
-          Logout
-        </button>
+        <div className="flex flex-col items-end gap-1">
+          <button 
+            onClick={() => loadStudentData(student.id)}
+            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition flex items-center gap-0.5"
+          >
+            ↻ Refresh
+          </button>
+          <button 
+            onClick={handleLogout}
+            className="text-xs font-bold text-gray-400 hover:text-gray-655 transition"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="px-4 pt-4 space-y-4">
@@ -211,31 +219,30 @@ export default function Home() {
                 <div className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg text-sm font-bold">
                   <Calendar className="w-4 h-4" /> Holiday today
                 </div>
-              ) : todayAttendance ? (
-                <div>
-                  <div className={`inline-flex items-center gap-1.5 ${
-                    todayAttendance.status === 'absent' 
-                      ? 'bg-red-100 text-red-700' 
-                      : 'bg-green-100 text-green-700'
-                  } px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider mb-2`}>
-                    {todayAttendance.status === 'absent' ? (
-                      <>
-                        <XCircle className="w-4 h-4" /> Marked Absent ✗
-                      </>
-                    ) : todayAttendance.status === 'late' ? (
-                      <>
-                        <CheckCircle className="w-4 h-4" /> Marked Late (Session logged)
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-4 h-4" /> Session logged ✓
-                      </>
-                    )}
-                  </div>
-                </div>
               ) : (
-                <div className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider">
-                  Awaiting today's session...
+                <div>
+                  <div className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider mb-2">
+                    <CheckCircle className="w-4 h-4" /> Session logged ✓
+                  </div>
+                  {todayAttendance ? (
+                    <div className="mt-1">
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mr-1">Your Attendance:</span>
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                        todayAttendance.status === 'absent' ? 'bg-red-100 text-red-700' :
+                        todayAttendance.status === 'late' ? 'bg-amber-100 text-amber-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>
+                        {todayAttendance.status}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="mt-1">
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mr-1">Your Attendance:</span>
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-gray-100 text-gray-500">
+                        Awaiting attendance...
+                      </span>
+                    </div>
+                  )}
                 </div>
               )
             ) : (
@@ -408,7 +415,7 @@ export default function Home() {
             <div className="space-y-3">
               {exams.map(exam => {
                 const examDateObj = new Date(exam.exam_date);
-                const todayMidnight = new Date();
+                const todayMidnight = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
                 todayMidnight.setHours(0,0,0,0);
                 const diffTime = examDateObj - todayMidnight;
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

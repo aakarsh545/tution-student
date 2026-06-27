@@ -26,7 +26,7 @@ export async function getStudentProfile(studentId) {
 }
 
 export async function getTodaysSession() {
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   const { data, error } = await supabase
     .from("sessions")
     .select("*")
@@ -87,7 +87,7 @@ export async function getStudentNotes(studentId) {
 }
 
 export async function getUpcomingExams() {
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   const { data, error } = await supabase
     .from('exams')
     .select('*')

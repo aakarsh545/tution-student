@@ -8,7 +8,7 @@ export default function AttendanceHistory() {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })));
   const [selectedRecord, setSelectedRecord] = useState(null);
 
   useEffect(() => {
