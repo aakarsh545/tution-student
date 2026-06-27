@@ -442,7 +442,7 @@ export default function Home() {
             className="flex-1 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold py-3 px-2 rounded-xl shadow-md shadow-green-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition"
           >
             <MessageSquare className="w-5 h-5" />
-            <span className="text-xs">Teacher 1</span>
+            <span className="text-xs">Ranjitha Ma'am</span>
           </a>
           <a 
             href={`https://wa.me/${TEACHER_2_PHONE.replace(/[^0-9]/g, '')}`}
@@ -451,7 +451,7 @@ export default function Home() {
             className="flex-1 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold py-3 px-2 rounded-xl shadow-md shadow-green-200 flex flex-col items-center justify-center gap-1 active:scale-95 transition"
           >
             <MessageSquare className="w-5 h-5" />
-            <span className="text-xs">Teacher 2</span>
+            <span className="text-xs">Nayana Ma'am</span>
           </a>
         </section>
 
