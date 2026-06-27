@@ -10,7 +10,8 @@ import {
   getUpcomingExams,
   getMyPulse,
   getPulseAggregate,
-  submitPulse
+  submitPulse,
+  getStudentProfile
 } from '../lib/db';
 import { TEACHER_PHONE } from '../lib/config';
 import { TIMETABLE } from '../lib/timetable';
@@ -66,14 +67,16 @@ export default function Home() {
         feesData,
         testsData,
         notesData,
-        examsData
+        examsData,
+        studentProfile
       ] = await Promise.all([
         getTodaysSession(),
         getStudentAttendance(studentId),
         getStudentFees(studentId),
         getStudentTests(studentId),
         getStudentNotes(studentId),
-        getUpcomingExams()
+        getUpcomingExams(),
+        getStudentProfile(studentId)
       ]);
 
       let myPulse = null;
@@ -109,8 +112,11 @@ export default function Home() {
       // Calculate pending fees for current month
       const currentMonthStr = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
       let pendingFees = 0;
-      let feeStatus = 'Paid ✓';
+      let feeStatus = '';
+      
       const currentFee = feesData.find(f => f.month === currentMonthStr);
+      const feeAmount = studentProfile?.fee_amount || 0;
+
       if (currentFee) {
         pendingFees = currentFee.amount_due - currentFee.amount_paid;
         if (pendingFees > 0) {
@@ -118,6 +124,14 @@ export default function Home() {
           else feeStatus = `₹${pendingFees} due for ${currentMonthStr}`;
         } else {
           feeStatus = `${currentMonthStr} — Paid ✓`;
+        }
+      } else {
+        // No fee record exists for this month, which means it's unpaid
+        pendingFees = feeAmount;
+        if (feeAmount > 0) {
+          feeStatus = `₹${feeAmount} due for ${currentMonthStr}`;
+        } else {
+          feeStatus = `Unpaid for ${currentMonthStr}`;
         }
       }
 

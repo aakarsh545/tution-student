@@ -15,6 +15,16 @@ export async function loginStudent(name, pin) {
   return data;
 }
 
+export async function getStudentProfile(studentId) {
+  const { data, error } = await supabase
+    .from("students")
+    .select("*")
+    .eq("id", studentId)
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function getTodaysSession() {
   const todayStr = new Date().toISOString().split("T")[0];
   const { data, error } = await supabase
