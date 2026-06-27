@@ -30,6 +30,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
     todaySession: null,
+    todayAttendance: null,
     attendanceStats: { present: 0, absent: 0, late: 0, total: 0 },
     streak: 0,
     missedSessions: [],
@@ -79,9 +80,11 @@ export default function Home() {
         getStudentProfile(studentId)
       ]);
 
+      const todayAttendance = todaySession ? attendanceData.find(a => a.session_id === todaySession.id) : null;
+
       let myPulse = null;
       let pulseAggregate = [];
-      if (todaySession && todaySession.subject !== 'holiday') {
+      if (todaySession && todaySession.subject !== 'holiday' && todayAttendance && todayAttendance.status !== 'absent') {
         const pulseRes = await Promise.all([
           getMyPulse(studentId, todaySession.id),
           getPulseAggregate(todaySession.id)
@@ -146,6 +149,7 @@ export default function Home() {
 
       setData({
         todaySession,
+        todayAttendance,
         attendanceStats: stats,
         streak: currentStreak,
         missedSessions: missed.sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 5),
@@ -194,7 +198,7 @@ export default function Home() {
     );
   }
 
-  const { todaySession, attendanceStats, streak, missedSessions, pendingFees, feeStatus, tests, notes, exams } = data;
+  const { todaySession, todayAttendance, attendanceStats, streak, missedSessions, pendingFees, feeStatus, tests, notes, exams } = data;
   const attendancePercentage = attendanceStats.total === 0 ? 0 : 
     Math.round(((attendanceStats.present + attendanceStats.late) / attendanceStats.total) * 100);
 
@@ -240,11 +244,31 @@ export default function Home() {
                 <div className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg text-sm font-bold">
                   <Calendar className="w-4 h-4" /> Holiday today
                 </div>
-              ) : (
+              ) : todayAttendance ? (
                 <div>
-                  <div className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider mb-2">
-                    <CheckCircle className="w-4 h-4" /> Session logged ✓
+                  <div className={`inline-flex items-center gap-1.5 ${
+                    todayAttendance.status === 'absent' 
+                      ? 'bg-red-100 text-red-700' 
+                      : 'bg-green-100 text-green-700'
+                  } px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider mb-2`}>
+                    {todayAttendance.status === 'absent' ? (
+                      <>
+                        <XCircle className="w-4 h-4" /> Marked Absent ✗
+                      </>
+                    ) : todayAttendance.status === 'late' ? (
+                      <>
+                        <CheckCircle className="w-4 h-4" /> Marked Late (Session logged)
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-4 h-4" /> Session logged ✓
+                      </>
+                    )}
                   </div>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-500 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider">
+                  Awaiting today's session...
                 </div>
               )
             ) : (
@@ -256,7 +280,7 @@ export default function Home() {
         </section>
 
         {/* Section 1.5 - Class Pulse */}
-        {todaySession && todaySession.subject !== 'holiday' && (
+        {todaySession && todaySession.subject !== 'holiday' && todayAttendance && todayAttendance.status !== 'absent' && (
           <section>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 relative overflow-hidden">
               <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
