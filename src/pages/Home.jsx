@@ -118,12 +118,20 @@ export default function Home() {
       const feeAmount = studentProfile?.fee_amount || 0;
 
       if (currentFee) {
-        pendingFees = currentFee.amount_due - currentFee.amount_paid;
-        if (pendingFees > 0) {
-          if (currentFee.amount_paid > 0) feeStatus = `₹${pendingFees} remaining for ${currentMonthStr}`;
-          else feeStatus = `₹${pendingFees} due for ${currentMonthStr}`;
-        } else {
+        if (currentFee.status === 'paid') {
+          pendingFees = 0;
           feeStatus = `${currentMonthStr} — Paid ✓`;
+        } else {
+          const dueAmt = currentFee.amount_due > 0 ? currentFee.amount_due : feeAmount;
+          pendingFees = dueAmt - currentFee.amount_paid;
+          // Ensure pendingFees is not 0 if status is not paid
+          if (pendingFees <= 0) pendingFees = dueAmt > 0 ? dueAmt : 1; 
+          
+          if (currentFee.amount_paid > 0) {
+            feeStatus = `₹${pendingFees} remaining for ${currentMonthStr}`;
+          } else {
+            feeStatus = `₹${dueAmt} due for ${currentMonthStr}`;
+          }
         }
       } else {
         // No fee record exists for this month, which means it's unpaid
@@ -132,6 +140,7 @@ export default function Home() {
           feeStatus = `₹${feeAmount} due for ${currentMonthStr}`;
         } else {
           feeStatus = `Unpaid for ${currentMonthStr}`;
+          pendingFees = 1; // force amber color
         }
       }
 
