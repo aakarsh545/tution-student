@@ -31,10 +31,11 @@ export async function getTodaysSession() {
     .from("sessions")
     .select("*")
     .eq("date", todayStr)
-    .single();
+    .order("created_at", { ascending: false })
+    .limit(1);
 
-  if (error && error.code !== "PGRST116") throw error;
-  return data;
+  if (error) throw error;
+  return data?.[0] || null;
 }
 
 export async function getStudentAttendance(studentId) {

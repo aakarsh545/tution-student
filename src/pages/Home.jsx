@@ -11,6 +11,7 @@ import {
   getStudentProfile
 } from '../lib/db';
 import { TEACHER_1_PHONE, TEACHER_2_PHONE } from '../lib/config';
+import { supabase } from '../lib/supabase';
 import { TIMETABLE } from '../lib/timetable';
 import { 
   MessageSquare,
@@ -54,6 +55,17 @@ export default function Home() {
   };
 
   const loadStudentData = async (studentId) => {
+    console.log('TODAY DATE STRING:', new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }))
+
+    const { data: sessionData, error: sessionError } = await supabase
+      .from('sessions')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(5)
+
+    console.log('ALL RECENT SESSIONS:', JSON.stringify(sessionData))
+    console.log('SESSION ERROR:', sessionError)
+
     try {
       setLoading(true);
       
