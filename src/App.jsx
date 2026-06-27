@@ -10,9 +10,6 @@ import Login from './pages/Login';
 import AttendanceHistory from './pages/AttendanceHistory';
 import PaymentHistory from './pages/PaymentHistory';
 import TestHistory from './pages/TestHistory';
-import Leaderboard from './pages/Leaderboard';
-import Badges from './pages/Badges';
-import Layout from './components/Layout';
 
 export default function App() {
   return (
@@ -20,12 +17,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         
-        {/* Main tabs with bottom nav */}
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/badges" element={<Badges />} />
-        </Route>
+        <Route path="/" element={<Home />} />
 
         {/* History pages without bottom nav */}
         <Route path="/attendance-history" element={<AttendanceHistory />} />

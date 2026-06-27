@@ -18,7 +18,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('../tuition-student-release.keystore')
+            storeFile file('../tuition-student.keystore')
             storePassword 'tuition2026'
             keyAlias 'tuition-student'
             keyPassword 'tuition2026'

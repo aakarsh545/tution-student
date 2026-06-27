@@ -8,9 +8,6 @@ import {
   getStudentTests, 
   getStudentNotes,
   getUpcomingExams,
-  getMyPulse,
-  getPulseAggregate,
-  submitPulse,
   getStudentProfile
 } from '../lib/db';
 import { TEACHER_1_PHONE, TEACHER_2_PHONE } from '../lib/config';
@@ -38,9 +35,7 @@ export default function Home() {
     feeStatus: 'Paid ✓',
     tests: [],
     notes: [],
-    exams: [],
-    myPulse: null,
-    pulseAggregate: []
+    exams: []
   });
 
   useEffect(() => {
@@ -81,17 +76,6 @@ export default function Home() {
       ]);
 
       const todayAttendance = todaySession ? attendanceData.find(a => a.session_id === todaySession.id) : null;
-
-      let myPulse = null;
-      let pulseAggregate = [];
-      if (todaySession && todaySession.subject !== 'holiday' && todayAttendance && todayAttendance.status !== 'absent') {
-        const pulseRes = await Promise.all([
-          getMyPulse(studentId, todaySession.id),
-          getPulseAggregate(todaySession.id)
-        ]);
-        myPulse = pulseRes[0];
-        pulseAggregate = pulseRes[1];
-      }
 
       // Calculate attendance stats & streak
       const stats = { present: 0, absent: 0, late: 0, total: attendanceData.length };
@@ -157,9 +141,7 @@ export default function Home() {
         feeStatus,
         tests: testsData.slice(0, 3),
         notes: notesData,
-        exams: examsData.slice(0, 3),
-        myPulse,
-        pulseAggregate
+        exams: examsData.slice(0, 3)
       });
 
     } catch (error) {
@@ -173,21 +155,6 @@ export default function Home() {
     await Preferences.remove({ key: 'studentAuth' });
     localStorage.removeItem('studentAuth');
     navigate('/login');
-  };
-
-  const handlePulse = async (rating) => {
-    if (!student || !data.todaySession || data.myPulse) return;
-    try {
-      const pulse = { student_id: student.id, session_id: data.todaySession.id, rating };
-      await submitPulse(pulse);
-      setData(prev => ({
-        ...prev,
-        myPulse: pulse,
-        pulseAggregate: [...prev.pulseAggregate, { rating }]
-      }));
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   if (loading || !student) {
@@ -279,51 +246,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Section 1.5 - Class Pulse */}
-        {todaySession && todaySession.subject !== 'holiday' && todayAttendance && todayAttendance.status !== 'absent' && (
-          <section>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 relative overflow-hidden">
-              <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                📡 Class Pulse
-              </h3>
-              
-              {!data.myPulse ? (
-                <div>
-                  <p className="text-sm font-semibold text-gray-500 mb-3">How was today's class?</p>
-                  <div className="flex justify-between items-center">
-                    {['😴', '😊', '🔥', '😵', '😐'].map(emoji => (
-                      <button 
-                        key={emoji}
-                        onClick={() => handlePulse(emoji)}
-                        className="text-4xl hover:scale-110 active:scale-90 transition-transform"
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <div className="flex justify-between items-center bg-slate-50 rounded-xl p-3 mb-2">
-                    {['😴', '😊', '🔥', '😵', '😐'].map(emoji => {
-                      const count = data.pulseAggregate.filter(p => p.rating === emoji).length;
-                      const isMine = data.myPulse.rating === emoji;
-                      return (
-                        <div key={emoji} className={`flex flex-col items-center ${isMine ? 'ring-2 ring-indigo-400 bg-indigo-50 rounded-lg p-1' : 'p-1'}`}>
-                          <span className="text-2xl">{emoji}</span>
-                          <span className="text-xs font-bold text-gray-500">{count}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <p className="text-xs font-bold text-gray-400 text-center uppercase tracking-wider">
-                    {data.pulseAggregate.length} responses
-                  </p>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
 
         {/* Section 2 - My Attendance */}
         <section>
